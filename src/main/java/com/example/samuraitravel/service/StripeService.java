@@ -50,7 +50,7 @@ public class StripeService {
 	@Value("${stripe.success-url}")
 	private String stripeSuccessUrl;
 	
-	//決済キャンセル時のリダイレクト先UTRL
+	//決済キャンセル時のリダイレクト先URL
 	@Value("${stripe.cancel-url}")
 	private String stripeCancelUrl;
 	
@@ -120,6 +120,10 @@ public class StripeService {
 						.build())
 				.build();
 		
+	    // 追加ログ出力　metadata値
+	    System.out.println("houseId: " + houseId);
+	    System.out.println("checkinDate: " + checkinDate);		
+		
 		//セッションの作成時に発生する可能性のある例外をキャッチ
 		try {
 			//Stripeに送信する支払い情報をセッションとして作成する
@@ -154,12 +158,18 @@ public class StripeService {
 	//86 予約情報の登録処理を変更　サービスクラス
 	//セッションから予約情報を取得し、ReservationServiceクラスを介してデータベースに登録する
 	public void processSessionCompleted(Event event) {
+		//追加ログ
+	    System.out.println("Webhook受信→予約登録開始" + event.getType());
+		
 		//EventオブジェクトからStripeObjectオブジェクトを取得する
 		Optional<StripeObject> optionalStripeObject = event.getDataObjectDeserializer().getObject();
 		
 		optionalStripeObject.ifPresentOrElse(stripeObject -> {
 			//StripeObjectオブジェクトをSessionオブジェクトに型変換する
 			Session session = (Session)stripeObject;
+			
+			//追加ログ出力
+		    System.out.println("取得したmetadata: " + session.getPaymentIntentObject().getMetadata());
 			
 			//"payment_intent"情報を展開する（詳細情報を含める）ように指定したSessionRetrieveParamsオブジェクトを生成する
 			SessionRetrieveParams sessionRetrieveParams = SessionRetrieveParams.builder().addExpand("payment_intent").build();
@@ -171,11 +181,16 @@ public class StripeService {
 				//詳細なセッション情報からメタデータ（予約情報）を取り出す
 				Map<String, String> sessionMetadata = session.getPaymentIntentObject().getMetadata();
 				
+			    // 追加ログ　仮で登録直前にもログ
+			    System.out.println("予約保存前: " + sessionMetadata);
+			    
 				//予約情報をデータベースに登録する
 				reservationService.createReservation(sessionMetadata);
 				
+				//ログで完了したか確認
 				System.out.println("予約情報の登録処理が成功しました。");
-				
+			    
+			    
 			} catch (RateLimitException e) {
 				System.out.println("短時間のうちに過剰な回数のAPIコールが行われました。");
 			} catch (InvalidRequestException e) {

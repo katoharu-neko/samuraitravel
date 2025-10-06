@@ -3,10 +3,10 @@ package com.example.samuraitravel.controller;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.samuraitravel.service.StripeService;
 import com.stripe.exception.SignatureVerificationException;
@@ -14,7 +14,8 @@ import com.stripe.model.Event;
 import com.stripe.net.Webhook;
 
 //87 予約情報の登録処理を変更する　コントローラー
-@Controller
+//@Controllerから変更
+@RestController
 public class StripeWebhookController {
 	private final StripeService stripeService;
 	

@@ -67,7 +67,7 @@ public class StripeService {
 	@PostConstruct
 	private void init() {
 		//Stripeのシークレットキーを設定する
-		Stripe.apiKey = "sk_test_51SBSQlLtmlk1U6vFtTNVwWBNaKB7cDhRjE0baS1oZiqvJk83eaJZJ4bYfUwfpRabLYoROVbwv3VSeHHuiXmtFYxz00ICVuJif5";
+		Stripe.apiKey = "";
 	}
 	
 	//Stripeに送信する支払い情報をセッションとして作成すること
@@ -187,7 +187,7 @@ public class StripeService {
 				//予約情報をデータベースに登録する
 				reservationService.createReservation(sessionMetadata);
 				
-				//ログで完了したか確認
+				//ログで完了したか
 				System.out.println("予約情報の登録処理が成功しました。");
 			    
 			    

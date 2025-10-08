@@ -169,7 +169,7 @@ public class StripeService {
 			Session session = (Session)stripeObject;
 			
 			//追加ログ出力
-		    System.out.println("取得したmetadata: " + session.getPaymentIntentObject().getMetadata());
+		    //System.out.println("取得したmetadata: " + session.getPaymentIntentObject().getMetadata());
 			
 			//"payment_intent"情報を展開する（詳細情報を含める）ように指定したSessionRetrieveParamsオブジェクトを生成する
 			SessionRetrieveParams sessionRetrieveParams = SessionRetrieveParams.builder().addExpand("payment_intent").build();

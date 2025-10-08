@@ -67,7 +67,7 @@ public class StripeService {
 	@PostConstruct
 	private void init() {
 		//Stripeのシークレットキーを設定する
-
+		Stripe.apiKey ="sk_test_51SBSQlLtmlk1U6vFtTNVwWBNaKB7cDhRjE0baS1oZiqvJk83eaJZJ4bYfUwfpRabLYoROVbwv3VSeHHuiXmtFYxz00ICVuJif5";
 	}
 	
 	//Stripeに送信する支払い情報をセッションとして作成すること

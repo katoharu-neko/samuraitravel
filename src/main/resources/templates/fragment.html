@@ -89,6 +89,27 @@
 										</a>
 										<form id="logout-form" class="d-none" th:action="@{/logout}" method="post"></form>
 									</div>
+								</li>
+								<!-- ログイン済みの民宿オーナーであれば表示する -->
+								<li class="nav-item dropdown" sec:authorize="hasRole('ROLE_OWNER')">
+									<a id="navbarDropdownOwner" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+										オーナー管理者メニュー
+									</a>
+									
+									<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownOwner">
+										
+										<a class="dropdown-item samuraitravel-dropdown-item" th:href="@{/user}">オーナー会員情報</a>
+										<a class="dropdown-item samuraitravel-dropdown-item" th:href="@{/reservations}">予約一覧</a>
+										<a class="dropdown-item samuraitravel-dropdown-item" th:href="@{/favorites}">お気に入り一覧</a>
+										<a class="dropdown-item samuraitravel-dropdown-item" th:href="@{/owner/house}">民宿詳細ページ編集</a>
+										
+										<div class="dropdown-divider"></div>
+										
+										<a class="dropdown-item samuraitravel-dropdown-item" th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+											ログアウト
+										</a>
+										<form id="logout-form" class="d-none" th:action="@{/logout}" method="post"></form>
+									</div>
 									
 								</li>
 							</ul>

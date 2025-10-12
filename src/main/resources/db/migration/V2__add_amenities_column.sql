@@ -1,0 +1,2 @@
+
+ALTER TABLE houses ADD COLUMN amenities VARCHAR(255);

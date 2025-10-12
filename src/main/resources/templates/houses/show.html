@@ -129,7 +129,17 @@
                                            <div class="col">
                                                <span th:text="${house.phoneNumber}"></span>
                                            </div>
-                                       </div>						
+                                       </div>
+                                       
+                            		   <div class="row pb-2 mb-2 border-bottom">
+                                           <div class="col-4">
+                                               <span class="fw-bold">アメニティ</span>
+                                           </div>
+
+                                           <div class="col">
+                                               <span th:text="${house.amenities}"></span>
+                                           </div>
+                                       </div>					
 									</div>
 									<!-- 予約機能はログイン済のフーザー限定なので未ログインの場合はログインを促すHTMLを表示している。-->
 									<div sec:authorize="isAnonymous()" class="col-lg-4 px-0 ps-lg-4 mb-4">

@@ -90,6 +90,17 @@
 			<artifactId>stripe-java</artifactId>
 			<version>30.0.0</version>
 		</dependency>
+		<dependency>
+    		<groupId>org.flywaydb</groupId>
+    		<artifactId>flyway-core</artifactId>
+    		<version>10.15.0</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.flywaydb</groupId>
+    		<artifactId>flyway-mysql</artifactId>
+    		<version>10.15.0</version>
+		</dependency>
+
 		
 	</dependencies>
 

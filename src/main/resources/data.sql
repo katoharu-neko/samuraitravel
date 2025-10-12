@@ -17,7 +17,6 @@ INSERT IGNORE INTO users (id, name, furigana, postal_code, address, phone_number
 INSERT IGNORE INTO users (id, name, furigana, postal_code, address, phone_number, email, password, role_id, enabled) VALUES (11, '侍 秋美', 'サムライ アキミ', '606-8235', '京都府京都市左京区田中西春菜町X-XX-XX', '090-1234-5678', 'akimi.samurai@example.com', 'password', 1, false);
 INSERT IGNORE INTO users (id, name, furigana, postal_code, address, phone_number, email, password, role_id, enabled) VALUES (12, '侍 信平', 'サムライ シンペイ', '673-1324', '兵庫県加東市新定X-XX-XX', '090-1234-5678', 'shinpei.samurai@example.com', 'password', 1, false);
 
-
 /* housesテーブル */
 INSERT IGNORE INTO houses (id, name, image_name, description, price, capacity, postal_code, address, phone_number) VALUES (1, 'SAMURAIの宿', 'house01.jpg', '最寄り駅から徒歩10分。自然豊かで閑静な場所にあります。長期滞在も可能です。', 6000, 2, '073-0145', '北海道砂川市西五条南X-XX-XX', '012-345-678');
 INSERT IGNORE INTO houses (id, name, image_name, description, price, capacity, postal_code, address, phone_number) VALUES (2, 'ペンション SAMURAI', 'house02.jpg', '最寄り駅から徒歩10分。自然豊かで閑静な場所にあります。長期滞在も可能です。', 7000, 3, '030-0945', '青森県青森市桜川X-XX-XX', '012-345-678');
@@ -76,6 +75,7 @@ INSERT IGNORE INTO houses (id, name, image_name, description, price, capacity, p
 INSERT IGNORE INTO houses (id, name, image_name, description, price, capacity, postal_code, address, phone_number) VALUES (55, 'ゲストハウス サムライ', 'house05.jpg', '最寄り駅から徒歩10分。自然豊かで閑静な場所にあります。長期滞在も可能です。', 10000, 6, '042-0908', '北海道函館市銅山町X-XX-XX', '012-345-678');
 INSERT IGNORE INTO houses (id, name, image_name, description, price, capacity, postal_code, address, phone_number) VALUES (56, 'サムライ屋', 'house06.jpg', '最寄り駅から徒歩10分。自然豊かで閑静な場所にあります。長期滞在も可能です。', 6000, 2, '050-0061', '北海道室蘭市八丁平X-XX-XX', '012-345-678');
 INSERT IGNORE INTO houses (id, name, image_name, description, price, capacity, postal_code, address, phone_number) VALUES (57, '民宿 サムライ', 'house07.jpg', '最寄り駅から徒歩10分。自然豊かで閑静な場所にあります。長期滞在も可能です。', 7000, 3, '059-0027', '北海道登別市青葉町X-XX-XX', '012-345-678');
+
 
 /* reservationsテーブル */
 INSERT IGNORE INTO reservations (id, house_id, user_id, checkin_date, checkout_date, number_of_people, amount) VALUES (1, 1, 1, '2023-04-01', '2023-04-02', 2, 6000);

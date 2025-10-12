@@ -59,6 +59,9 @@ public class House {
 	@Column(name = "updated_at", insertable = false, updatable = false)
 	private Timestamp updatedAt;
 	
+	@Column(name = "amenities")
+	private String amenities;
+	
 	//69 カスケード削除
 	//一対多のフィールドに@OneToManyアノテーションをつける。mappedBy属性を設定して双方向の参照ができるようにする。cascade属性を使い削除の操作が紐づいたエンティティにも適用される　
 	//fetch属性を設定して相手エンティティの取得タイミングを取得する

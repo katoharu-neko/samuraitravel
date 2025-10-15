@@ -1,0 +1,55 @@
+/* 2次開発　① 満室イベントの見た目（太字・赤系リボン） */
+/* FullCalendar用スタイル */
+
+/* 満室イベントの見た目（赤系ラベル） */
+.fc-event.booked-event { border: 0; }
+.fc-event.booked-event .fc-event-main { font-weight: 700; }
+.booked-label {
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: #fdd;
+  border: 1px solid #f99;
+  display: inline-block;
+}
+
+/* ページ全体の軽いレイアウト調整 */
+.container {
+  max-width: 700px;
+  margin: 40px auto;
+  font-family: "Hiragino Kaku Gothic ProN", "メイリオ", sans-serif;
+}
+
+.form-group {
+  margin: 10px 0;
+}
+
+/* カレンダーのレイアウトを調整 */
+#calendar {
+  max-width: 900px;
+  margin: 0 auto 1rem;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+/* 民宿情報・フォームを中央寄せ */
+.container > .col-lg-8,
+.container > .col-lg-6 {
+  text-align: left;
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 768px) {
+  #calendar {
+    width: 100%;
+    margin: 20px auto;
+  }
+}
+
+/* 予約カードを少し広めに（最大 900px） */
+@media (min-width: 992px) {
+  .samurai-reserve-card {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

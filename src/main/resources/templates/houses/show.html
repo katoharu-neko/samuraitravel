@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <!--  66宿泊詳細ページの作成　-->
-<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="ja">
 	<head>
 		<div th:replace="~{fragment :: meta}"></div>
 		
 		<div th:replace="~{fragment :: styles}"></div>
 		
-		<!-- Flatpickr -->
+		<!-- Flatpickr 
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+		-->
+		<meta charset="UTF-8">
+		<title th:text="${house.name} + ' | 民宿詳細'">民宿詳細</title>
 		
-		<title>民宿詳細</title>
+		<!-- CSSファイル -->
+    	<link th:href="@{/css/houses.css}" rel="stylesheet" />
+
+		<!-- 2次開発　FullCalendar CSS-->
+		<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
+
 	</head>
 	<body>
 		<div class="samuraitravel-wrapper">
@@ -57,7 +65,93 @@
 								<img th:if="${house.imageName}" th:src="@{/storage/__${house.imageName}__}" class="w-100" alt="民宿画像">
 								<img th:unless="${house.imageName}" th:src="@{/images/noImage.png}" class="w-100" alt="NO IMAGE">
 							</div>
-							
+							<div class="container mb-5">
+  <!-- 民宿情報 -->
+  <div class="col-lg-8 mx-auto mb-4">
+    <div class="row pb-2 mb-2 border-bottom">
+      <div class="col-4"><span class="fw-bold">民宿名</span></div>
+      <div class="col"><span th:text="${house.name}"></span></div>
+    </div>
+
+    <div class="row pb-2 mb-2 border-bottom">
+      <div class="col-4"><span class="fw-bold">説明</span></div>
+      <div class="col"><span th:text="${house.description}"></span></div>
+    </div>
+
+    <div class="row pb-2 mb-2 border-bottom">
+      <div class="col-4"><span class="fw-bold">宿泊料金</span></div>
+      <div class="col"><span th:text="${#numbers.formatInteger(house.price, 1, 'COMMA') + '円'}"></span></div>
+    </div>
+
+    <div class="row pb-2 mb-2 border-bottom">
+      <div class="col-4"><span class="fw-bold">定員</span></div>
+      <div class="col"><span th:text="${house.capacity + '人'}"></span></div>
+    </div>
+
+    <div class="row pb-2 mb-2 border-bottom">
+      <div class="col-4"><span class="fw-bold">住所</span></div>
+      <div class="col"><span th:text="${house.address}"></span></div>
+    </div>
+
+    <div class="row pb-2 mb-2 border-bottom">
+      <div class="col-4"><span class="fw-bold">アメニティ</span></div>
+      <div class="col"><span th:text="${house.amenities}"></span></div>
+    </div>
+  </div>
+
+  <!-- 予約フォーム -->
+  <!-- 予約機能はログインユーザー限定 -->
+<div sec:authorize="isAuthenticated()" class="col-lg-8 mx-auto mb-5">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <!-- バリデーション全体のメッセージ -->
+      <div th:if="${errorMessage}" class="alert alert-danger mb-3">
+        <span th:text="${errorMessage}"></span>
+      </div>
+
+      <form id="reservationForm"
+            method="post"
+            th:action="@{/houses/__${house.id}__/reservations/input}"
+            th:object="${reservationInputForm}">
+        
+        <!-- 人数 -->
+        <div class="form-group mb-3">
+          <label for="numberOfPeople" class="fw-bold">人数</label>
+          <div th:if="${#fields.hasErrors('numberOfPeople')}" class="text-danger small mb-1" th:errors="*{numberOfPeople}"></div>
+          <input id="numberOfPeople" type="number" class="form-control" th:field="*{numberOfPeople}" min="1" required>
+        </div>
+
+        <!-- チェックイン・アウト ラベル -->
+        <div class="mb-2 fw-bold">チェックイン・チェックアウト</div>
+        <!-- 日付エラー -->
+        <div th:if="${#fields.hasErrors('checkinDate')}" class="text-danger small" th:errors="*{checkinDate}"></div>
+        <div th:if="${#fields.hasErrors('checkoutDate')}" class="text-danger small mb-2" th:errors="*{checkoutDate}"></div>
+
+        <!-- カレンダー（フォーム内に配置） -->
+        <div id="calendar" class="shadow-sm p-3 bg-white rounded mb-3"></div>
+
+        <!-- 選択結果の表示テキスト（読み取り専用） -->
+        <input type="text" class="form-control mb-3"
+               id="fromCheckinDateToCheckoutDate"
+               th:value="${previousDates}"
+               placeholder="カレンダーで日付を選択してください"
+               readonly>
+
+        <!-- バインド対象は th:field を使う（ここが重要） -->
+        <input type="hidden" th:field="*{checkinDate}">
+        <input type="hidden" th:field="*{checkoutDate}">
+
+        <!-- CSRF -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <!-- 送信ボタン（自動送信でも良いが念のため残す） -->
+        <button type="submit" class="btn samuraitravel-btn text-white w-100">予約内容を確認</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+							<style>/*
 							<div class="container">
 								<div class="row">
 									<div class="col-lg-8 container mb-4">
@@ -154,11 +248,11 @@
 									<div sec:authorize="isAuthenticated()" class="col-lg-4 px-0 ps-lg-4 mb-4">
 										<div class="card">
 											<div class="card-body">
-												<form method="post" th:action="@{/houses/__${house.id}__/reservations/input}" th:object="${reservationInputForm}">
+												<form id="reservationForm" method="post" th:action="@{/houses/__${house.id}__/reservations/input}" th:object="${reservationInputForm}">
 													<div class="form-group mb-2">
-														<!-- 一時的に追加　カレンダーに飛ぶ -->
+														<!-- 一時的に追加　カレンダーに飛ぶ 
 														<a class="btn btn-outline-primary" th:href="@{'/calendar/' + ${house.id}}">予約状況カレンダーを見る</a>
-														
+														-->
 														<label for="fromCheckinDateToCheckoutDate" class="col-form-label text-md-left fw-bold">チェックイン・チェックアウト</label>
 														<div th:if="${#fields.hasErrors('checkinDate')}" class="text-danger small mb-2" th:errors="*{checkinDate}"></div>
 														<div th:if="${#fields.hasErrors('checkoutDate')}" class="text-danger small mb-2" th:errors="*{checkoutDate}"></div>
@@ -166,26 +260,47 @@
 														<!-- エラー発生時、チェックイン・チェックアウト日の入力に不備がない場合は以前の入力値を表示する　-->
 														<input type="text" class="form-control" id="fromCheckinDateToCheckoutDate" th:value="${previousDates}" readonly> <!-- readonly=読み取り専用 -->
 														<!-- type=hiddenを使って分けて設置する。-->
+														<!--
 														<input type="hidden" th:field="*{checkinDate}">
 														<input type="hidden" th:field="*{checkoutDate}">
+														-->
+														<input type="hidden" name="checkinDate" />
+														<input type="hidden" name="checkoutDate" />
+														
 													</div>
-													
+													<!-- 人数入力 
 													<div class="form-group mb-4">
 														<label for="numberOfPeople" class="col-form-label text-md-left fw-bold">宿泊人数</label>
 														<div th:if="${#fields.hasErrors('numberOfPeople')}" class="text-danger small mb-2" th:errors="*{numberOfPeople}"></div>
 														<input type="number" class="form-control" th:field="*{numberOfPeople}" min="1">
 													</div>
+													-->
+													<!-- 人数入力は既存のものを利用（バリデーションも既存のまま） -->
+													<div>
+														<label>人数</label>
+														<input type="number" th:field="*{numberOfPeople}" min="1" required>
+													</div>
 													
+													<!-- CSRF -->
+													<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+													
+													<!--
 													<div class="form-group">
 														<button type="submit" class="btn text-white shadow-sm w-100 samuraitravel-btn">予約する</button>
 													</div>
+													-->
 												</form>
+												
+												<!-- FullCalendarを表示 -->
+												<div id="calendar" style="margin-top: 1rem;"></div>
+												
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							
+							*/</style>
+								
 							<!-- レビューセクション　-->
 							<div class="container px-0">
 								<h2 class="mb-4 text-center">レビュー</h2>
@@ -252,11 +367,23 @@
 		
 		<div th:replace="~{fragment :: scripts}"></div>
 		<!-- 74 会員用予約フォーム -->
-		<!-- Flatpickr -->
+		<!-- Flatpickr 
 		<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 		<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+		-->
+		
+		<!-- FullCalendar JS本体 -->
+    	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+		
+		<!-- Thymeleaf変数をJavaScriptに渡す -->
+		<script th:inline="javascript">
+			const houseId = [[${house.id}]];
+		</script>
+		
 		<!-- JSファイルの読み込み -->
-        <script th:src="@{/js/flatpickr.js}"></script>  
+        <!-- <script th:src="@{/js/flatpickr.js}"></script>  -->
+     	<!-- 外部JSファイル -->
+    	<script th:src="@{/js/fullcalendar.js}"></script>       
 		
 	</body>
 	

@@ -1,6 +1,10 @@
 package com.example.samuraitravel.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.samuraitravel.dto.ReservationDTO;
@@ -188,5 +193,30 @@ public class ReservationController {
 		
 	}
 	*/
+	
+	//2次開発　カレンダー表示
+	@GetMapping("/houses/{id}/calendar-events")
+	@ResponseBody
+	public List<Map<String, Object>> calendarEvents(@PathVariable("id") Integer houseId) {
+	    // このHouseの全予約を取得
+	    List<Reservation> reservations = reservationService.findByHouseId(houseId);
+	    List<Map<String, Object>> events = new ArrayList<>();
+
+	    for (Reservation r : reservations) {
+	        Map<String, Object> ev = new HashMap<>();
+	        // FullCalendarはendが「排他的」なので checkoutDate をそのまま渡す
+	        ev.put("title", "満室"); // ①表示で使う
+	        ev.put("start", r.getCheckinDate().toString());
+	        ev.put("end",   r.getCheckoutDate().toString());
+	        // カスタム情報（クリック禁止・重なり禁止の判定に使う）
+	        Map<String, Object> ext = new HashMap<>();
+	        ext.put("type", "booked");
+	        ev.put("extendedProps", ext);
+	        // 見やすさ（色などはCSS/rendererで上書き）
+	        ev.put("allDay", true);
+	        events.add(ev);
+	    }
+	    return events;
+	}
 
 }

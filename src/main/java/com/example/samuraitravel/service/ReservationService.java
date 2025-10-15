@@ -52,6 +52,9 @@ public class ReservationService {
 		return numberOfPeople <= capacity;
 	}
 	
+	//2次開発重複予約チェック
+	
+	
 	//チェックイン・チェックアウト日の入力に不備がない場合は以前の入力値を取得する
 	//houses/show.htmlファイルに渡す変数（previousDates）の値を取得するためのメソッド
 	public String getPreviousDates(LocalDate checkinDate, LocalDate checkoutDate, BindingResult bindingResult) {

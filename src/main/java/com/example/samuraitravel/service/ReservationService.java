@@ -3,6 +3,7 @@ package com.example.samuraitravel.service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -126,5 +127,16 @@ public class ReservationService {
 		
 		reservationRepository.save(reservation);
 	}
+	
+	//2次開発　民宿単位の予約一覧取得
+    public List<Reservation> findByHouseId(Integer houseId) {
+        return reservationRepository.findByHouseId(houseId);
+    }
+    
+    //2次開発　空室判定（[checkin, checkout) 方式）
+    public boolean isAvailable(Integer houseId, LocalDate checkin, LocalDate checkout) {
+        return reservationRepository.findOverlap(houseId, checkin, checkout).isEmpty();
+    }
+    
 
 }

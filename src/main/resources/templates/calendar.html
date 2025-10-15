@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>予約カレンダー</title>
+
+  <!-- FullCalendar -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px auto; max-width: 900px; }
+    #calendar { max-width: 900px; margin: 0 auto; }
+    .fc-event { background-color: #ff6666 !important; border: none; }
+  </style>
+</head>
+<body>
+  <h2>予約カレンダー</h2>
+  <div id="calendar"></div>
+
+  <script th:inline="javascript">
+	/*<![CDATA[*/const houseId = [[${houseId}]];/*]]>*/
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const calendarEl = document.getElementById('calendar');
+      let reservedEvents = [];
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        selectable: true,
+        locale: 'ja',
+        height: 'auto',
+
+        events: {
+          url: `/calendar/events/${houseId}`,
+          method: 'GET',
+          failure: () => alert('予約情報の取得に失敗しました。'),
+          success: (events) => { reservedEvents = events; }
+        },
+
+        // 予約済み期間と重なる選択は不可
+        selectAllow: (info) => {
+          const start = new Date(info.start);
+          const end = new Date(info.end);
+          for (const ev of reservedEvents) {
+            const rStart = new Date(ev.start);
+            const rEnd   = new Date(ev.end);
+            if (start < rEnd && end > rStart) return false;
+          }
+          return true;
+        },
+
+        // 空いている範囲を選んだら既存の入力ルートに渡す
+        select: (info) => {
+          const checkin  = info.startStr;
+          const checkout = info.endStr;
+          if (confirm(`以下の日程で予約しますか？\n${checkin} ～ ${checkout}`)) {
+            window.location.href =
+              `/houses/${houseId}/reservations/input?checkinDate=${checkin}&checkoutDate=${checkout}`;
+          }
+        },
+
+        displayEventTime: false,
+        eventColor: '#ff6666',
+        eventTextColor: '#fff',
+      });
+
+      calendar.render();
+    });
+  </script>
+</body>
+</html>

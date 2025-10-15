@@ -156,6 +156,9 @@
 											<div class="card-body">
 												<form method="post" th:action="@{/houses/__${house.id}__/reservations/input}" th:object="${reservationInputForm}">
 													<div class="form-group mb-2">
+														<!-- 一時的に追加　カレンダーに飛ぶ -->
+														<a class="btn btn-outline-primary" th:href="@{'/calendar/' + ${house.id}}">予約状況カレンダーを見る</a>
+														
 														<label for="fromCheckinDateToCheckoutDate" class="col-form-label text-md-left fw-bold">チェックイン・チェックアウト</label>
 														<div th:if="${#fields.hasErrors('checkinDate')}" class="text-danger small mb-2" th:errors="*{checkinDate}"></div>
 														<div th:if="${#fields.hasErrors('checkoutDate')}" class="text-danger small mb-2" th:errors="*{checkoutDate}"></div>

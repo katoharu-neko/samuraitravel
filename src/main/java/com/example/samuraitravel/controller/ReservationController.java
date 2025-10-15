@@ -98,6 +98,17 @@ public class ReservationController {
 			bindingResult.addError(fieldError);
 		}
 		
+		// 2次開発　空き状況チェック
+		if (checkinDate != null && checkoutDate != null) {
+		    boolean available = reservationService.isAvailable(house.getId(), checkinDate, checkoutDate);
+		    if (!available) {
+		        // カレンダーから来ていない場合も想定して、フォーム側でもガード
+		        FieldError fieldError = new FieldError(bindingResult.getObjectName(),
+		                "checkinDate", "この期間はすでに予約があります。別の日程を選択してください。");
+		        bindingResult.addError(fieldError);
+		    }
+		}		
+		
 		if (bindingResult.hasErrors()) {
 			String previousDates = reservationService.getPreviousDates(checkinDate, checkoutDate, bindingResult);
 			

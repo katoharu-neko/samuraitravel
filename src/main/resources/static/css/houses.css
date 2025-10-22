@@ -53,3 +53,67 @@
     margin-right: auto;
   }
 }
+
+/* ===== FullCalendar（宿詳細ページ）強化 ===== */
+
+/* 日コマを絶対配置の基準に */
+.fc .fc-daygrid-day-frame {
+  position: relative;
+}
+
+/* --- 他人予約（満室） -------------------------------------------------- */
+.fc .st-booked-event.fc-daygrid-event {
+  /* イベント要素を日コマいっぱいに広げる */
+  position: absolute;
+  inset: 4px;               /* 周囲にわずかに余白 */
+  border: 1px solid #e57373;
+  background: #ffebee;      /* 薄い赤で塗る（可読性高） */
+  box-shadow: none;
+  z-index: 1;
+}
+
+.fc .st-booked-event .fc-event-main {
+  /* ラベルを中央にドンと */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-weight: 700;
+  color: #b71c1c;           /* 文字は濃い赤 */
+}
+
+/* ラベル用（eventContentで差し込む） */
+.fc .st-fullcell-label {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+/* --- 自分の予約（青・予約済） ----------------------------------------- */
+.fc .st-mine-event.fc-daygrid-event {
+  position: absolute;
+  inset: 4px;
+  border: 1px solid #64b5f6;
+  background: #e3f2fd;      /* 薄い青 */
+  box-shadow: none;
+  z-index: 1;
+}
+
+.fc .st-mine-event .fc-event-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-weight: 700;
+  color: #0d47a1;           /* 文字は濃い青 */
+}
+
+/* 自分予約のラベル */
+.fc .st-minecell-label {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+

@@ -36,6 +36,7 @@ import com.example.samuraitravel.service.StripeService;
 
 import jakarta.servlet.http.HttpSession;
 
+
 //会員用の予約一覧ページを作ろう
 
 @Controller
@@ -197,25 +198,48 @@ public class ReservationController {
 	//2次開発　カレンダー表示
 	@GetMapping("/houses/{id}/calendar-events")
 	@ResponseBody
-	public List<Map<String, Object>> calendarEvents(@PathVariable("id") Integer houseId) {
-	    // このHouseの全予約を取得
-	    List<Reservation> reservations = reservationService.findByHouseId(houseId);
+	public List<Map<String, Object>> getCalendarEvents(
+	        @PathVariable("id") Integer id,
+	        @AuthenticationPrincipal UserDetailsImpl loginUser // ★追加：ログインユーザーを受け取る
+	) {
 	    List<Map<String, Object>> events = new ArrayList<>();
+
+	    Optional<House> optHouse = houseService.findHouseById(id);
+	    if (optHouse.isEmpty()) {
+	        return events;
+	    }
+	    House house = optHouse.get();
+
+	    // この民宿の予約を全件取得
+	    List<Reservation> reservations = reservationService.findByHouseId(house.getId());
+
+	    Integer currentUserId = null;
+	    if (loginUser != null && loginUser.getUser() != null) {
+	        currentUserId = loginUser.getUser().getId();
+	    }
 
 	    for (Reservation r : reservations) {
 	        Map<String, Object> ev = new HashMap<>();
-	        // FullCalendarはendが「排他的」なので checkoutDate をそのまま渡す
-	        ev.put("title", "満室"); // ①表示で使う
-	        ev.put("start", r.getCheckinDate().toString());
-	        ev.put("end",   r.getCheckoutDate().toString());
-	        // カスタム情報（クリック禁止・重なり禁止の判定に使う）
-	        Map<String, Object> ext = new HashMap<>();
-	        ext.put("type", "booked");
-	        ev.put("extendedProps", ext);
-	        // 見やすさ（色などはCSS/rendererで上書き）
+	        ev.put("start", r.getCheckinDate().toString());   // 例: 2025-10-08
+	        ev.put("end",   r.getCheckoutDate().toString());  // FullCalendarはendを排他的に扱う
 	        ev.put("allDay", true);
+
+	        boolean isMine = (currentUserId != null && r.getUser() != null
+	                && currentUserId.equals(r.getUser().getId()));
+
+	        if (isMine) {
+	            // ★自分の予約：青で「予約済」
+	            ev.put("title", "予約済");
+	            ev.put("type",  "mine");
+	        } else {
+	            // ★他人の予約：満室
+	            ev.put("title", "満室");
+	            ev.put("type",  "booked");
+	        }
+
 	        events.add(ev);
 	    }
+
 	    return events;
 	}
 

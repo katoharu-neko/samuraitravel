@@ -1,10 +1,9 @@
-// window.fullcalendar.js
+// fullcalendar.js（置換版）
 document.addEventListener('DOMContentLoaded', function () {
-  // houseId はテンプレで埋め込み済み
   const calendarEl = document.getElementById('calendar');
   if (!calendarEl) return;
 
-  const form = document.getElementById('reservationForm');
+  const form    = document.getElementById('reservationForm');
   const display = document.getElementById('fromCheckinDateToCheckoutDate');
 
   const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -16,57 +15,81 @@ document.addEventListener('DOMContentLoaded', function () {
     selectLongPressDelay: 0,
     selectMirror: true,
 
-    // 予約イベント
+    // ★予約イベント取得（サーバー側で "type": booked|mine を付与）
     events: `/houses/${houseId}/calendar-events`,
 
-    // 満室見た目＆クリック不可
-    eventClassNames: (arg) => (arg.event.extendedProps?.type === 'booked' ? ['booked-event'] : []),
-    eventContent: (arg) => (arg.event.extendedProps?.type === 'booked'
-      ? { html: '<div class="booked-label">満室</div>' }
-      : { domNodes: [] }),
-    eventClick: (info) => {
-      if (info.event.extendedProps?.type === 'booked') {
+    // ★見た目クラス付与
+    eventClassNames: function (arg) {
+      const t = arg.event.extendedProps && arg.event.extendedProps.type;
+      if (t === 'booked') return ['st-booked-event']; // 満室（他人）
+      if (t === 'mine')   return ['st-mine-event'];   // 自分の予約
+      return [];
+    },
+
+    // ★各日コマにラベルを必ず描く（連泊でも毎日「満室/予約済」を表示）
+    //   FullCalendar v6 は dayGrid の各セグメントごとに eventContent が呼ばれるので、
+    //   isStart/isEnd を見ず、常に文字を返す。
+    eventContent: function (arg) {
+      const t = arg.event.extendedProps && arg.event.extendedProps.type;
+      if (t === 'booked') {
+        // 満室（他人）：日コマ全体を覆う帯の中央に「満室」
+        return { html: '<div class="st-fullcell-label">満室</div>' };
+      }
+      if (t === 'mine') {
+        // 自分の予約：標準ブルー系に「予約済」
+        return { html: '<div class="st-minecell-label">予約済</div>' };
+      }
+      return { domNodes: [] };
+    },
+
+    // ★「満室」イベントはクリック不可（自分の予約はクリックしても何もしない）
+    eventClick: function (info) {
+      const t = info.event.extendedProps && info.event.extendedProps.type;
+      if (t === 'booked' || t === 'mine') {
         info.jsEvent.preventDefault();
         return false;
       }
     },
 
-    // 予約済みと重なる選択は不可
+    // ★重なり選択の禁止（他人予約・自分予約どちらとも）
     selectAllow: function (selectInfo) {
       const selStart = selectInfo.start;
-      const selEnd = selectInfo.end;
-      for (const ev of calendar.getEvents()) {
-        if (ev.extendedProps?.type === 'booked') {
+      const selEnd   = selectInfo.end;
+      const events   = calendar.getEvents();
+
+      for (const ev of events) {
+        const t = ev.extendedProps && ev.extendedProps.type;
+        if (t === 'booked' || t === 'mine') {
+          // overlap: selStart < ev.end && selEnd > ev.start
           if (selStart < ev.end && selEnd > ev.start) return false;
         }
       }
       return true;
     },
 
-    // 範囲選択時の動作
+    // ★選択→既存フォームへ日付を入れて送信（旧flatpickrと同じ挙動）
     select: function (info) {
-      const checkin = info.startStr;  // 2025-10-20
-      const checkout = info.endStr;   // (排他的) → そのままサーバに渡す
+      const checkin  = info.startStr; // YYYY-MM-DD
+      const checkout = info.endStr;   // （排他的）
 
-      // 先に人数チェック
-      const people = form.querySelector('input[name="numberOfPeople"]');
-      if (!people || !people.value) {
+      // 人数が未入力なら先に入力を促す
+      const peopleInput = form.querySelector('input[name="numberOfPeople"]');
+      if (!peopleInput || !peopleInput.value) {
         alert('先に人数を入力してください。');
         calendar.unselect();
         return;
       }
 
-      // hiddenへ反映
-      form.querySelector('input[name="checkinDate"]').value = checkin;
+      if (!confirm(`${checkin} から ${checkout} の日程で予約しますか？`)) {
+        calendar.unselect();
+        return;
+      }
+
+      form.querySelector('input[name="checkinDate"]').value  = checkin;
       form.querySelector('input[name="checkoutDate"]').value = checkout;
       if (display) display.value = `${checkin} 〜 ${checkout}`;
 
-      // 旧flatpickr相当の挙動：確認してそのまま送信
-      if (confirm(`${checkin} から ${checkout} の日程で予約しますか？`)) {
-        form.submit();
-      } else {
-        calendar.unselect();
-      }
+      form.submit(); // POST /houses/{id}/reservations/input
     }
   });
 

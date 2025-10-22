@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="ja">
 	<head>
 		<div th:replace="~{fragment :: meta}"></div>
 		
 		<div th:replace="~{fragment :: styles}"></div>
 		
 		<title>予約一覧</title>
+		<!-- FullCalendar CSS（民宿詳細と同じ） -->
+  		<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
+
+  		<!-- 既存のサイトCSS -->
+  		<link th:href="@{/css/houses.css}" rel="stylesheet" />
 	</head>
 	
 	<body>
@@ -28,6 +33,14 @@
 							<div th:if="${param.reserved}" class="alert alert-info">
 								予約が完了しました。
 							</div>
+							
+							<!-- ◎追加：閲覧専用の自分用カレンダー（表より上） -->
+				          <div class="card mb-4">
+				            <div class="card-body">
+				              <h5 class="card-title mb-3">カレンダー表示</h5>
+				              <div id="myReservationsCalendar"></div>
+				            </div>
+				          </div>
 							
 							<table class="table">
 								<thead>
@@ -80,6 +93,10 @@
 		</div>
 		
 		<div th:replace="~{fragment :: scripts}"></div>
+		<!-- FullCalendar JS -->
+		<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+		<!-- 閲覧専用カレンダーJS -->
+		<script th:src="@{/js/reservations-calendar.js}"></script>
 	</body>
 	
 </html>

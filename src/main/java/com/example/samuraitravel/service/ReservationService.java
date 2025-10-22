@@ -143,5 +143,10 @@ public class ReservationService {
         return reservationRepository.findByHouseIdOrderByCheckinDateAsc(houseId);
     }
     
+    /** ユーザーIDで予約一覧を返す（Controllerの /reservations/calendar-events 用） */
+    public List<Reservation> findByUserId(Integer userId) {
+        return reservationRepository.findByUser_Id(userId);
+    }
+    
 
 }

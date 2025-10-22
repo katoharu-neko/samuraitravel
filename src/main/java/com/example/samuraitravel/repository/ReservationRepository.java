@@ -18,6 +18,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     List<Reservation> findByHouseIdOrderByCheckinDateAsc(Integer houseId);
 	public Reservation findFirstByOrderByIdDesc();
 	
+	
+	List<Reservation> findByUser_Id(Integer userId);
 	//2次開発　houseごとの予約一覧取得
     @Query("SELECT r FROM Reservation r WHERE r.house.id = :houseId ORDER BY r.checkinDate ASC")
     List<Reservation> findByHouseId(@Param("houseId") Integer houseId);

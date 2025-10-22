@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -103,7 +104,13 @@ public class ReservationController {
 			FieldError fieldError = new FieldError(bindingResult.getObjectName(), "numberOfPeople", "宿泊人数が定員を超えています。");
 			bindingResult.addError(fieldError);
 		}
-		
+		//2次開発　過去の予約不可
+        LocalDate today = LocalDate.now();
+        if (checkinDate != null && !checkinDate.isAfter(today)) {
+            bindingResult.addError(new FieldError(bindingResult.getObjectName(), "checkinDate",
+                    "当日を含む過去の日程は選択できません。"));
+        }
+        
 		// 2次開発　空き状況チェック
 		if (checkinDate != null && checkoutDate != null) {
 		    boolean available = reservationService.isAvailable(house.getId(), checkinDate, checkoutDate);
@@ -195,7 +202,7 @@ public class ReservationController {
 	}
 	*/
 	
-	//2次開発　カレンダー表示
+	//2次開発　民宿ごとのカレンダー表示
 	@GetMapping("/houses/{id}/calendar-events")
 	@ResponseBody
 	public List<Map<String, Object>> getCalendarEvents(
@@ -242,5 +249,36 @@ public class ReservationController {
 
 	    return events;
 	}
+	
+	
+	//2次開発　ユーザーの予約一覧用カレンダーイベント（ご要望③）
+	@GetMapping(value = "/reservations/calendar-events", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<Map<String, Object>> getMyReservationCalendarEvents(
+            @AuthenticationPrincipal UserDetailsImpl loginUser) {
+
+        List<Map<String, Object>> events = new ArrayList<>();
+        if (loginUser == null || loginUser.getUser() == null) return events;
+
+        Integer userId = loginUser.getUser().getId();
+        List<Reservation> myReservations = reservationService.findByUserId(userId);
+
+        for (Reservation r : myReservations) {
+            Map<String, Object> ev = new HashMap<>();
+            ev.put("start", r.getCheckinDate().toString());
+            ev.put("end", r.getCheckoutDate().toString());
+            ev.put("allDay", true);
+
+            String houseName = r.getHouse() != null ? r.getHouse().getName() : "民宿";
+            Integer people = r.getNumberOfPeople() != null ? r.getNumberOfPeople() : 0;
+
+            // 表示のみのカレンダーなので type は mine（表示スタイルを流用）
+            ev.put("type", "mine");
+            ev.put("title", houseName + "（" + people + "人）");
+            events.add(ev);
+        }
+        return events;
+    }
+
 
 }

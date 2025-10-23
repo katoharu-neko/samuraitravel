@@ -1,31 +1,37 @@
-// 自分の予約一覧ページ（/reservations）用：表示専用カレンダー
+// 予約一覧ページの FullCalendar（閲覧専用）
 document.addEventListener('DOMContentLoaded', function () {
-  const el = document.getElementById('myReservationCalendar');
-  if (!el) return;
+  const calEl = document.getElementById('myReservationsCalendar');
+  if (!calEl) return;
 
-  const calendar = new FullCalendar.Calendar(el, {
+  const calendar = new FullCalendar.Calendar(calEl, {
     locale: 'ja',
     initialView: 'dayGridMonth',
     height: 'auto',
-    firstDay: 0,          // 日曜はじまり（必要なら変更）
-    selectable: false,    // 表示専用
-    editable: false,      // ドラッグ等も不可
+    firstDay: 0,
+    selectable: false,
+    editable: false,
     eventStartEditable: false,
     eventDurationEditable: false,
-    dayMaxEvents: true,   // 枠溢れ時の「+n件」
+    dragScroll: false,
 
-    // 予約イベント（自分の予約のみ）
-    events: '/reservations/calendar-events',
+    // 自分の予約だけを返すエンドポイント
+    events: `/reservations/calendar-events`,
 
-    // すべてのイベントにクラスを付けて“ピル表示”のCSSを当てる
-    eventClassNames: function () {
-      return ['mine-event'];
+    eventClassNames: function (arg) {
+      // 自分の予約を「mine」表示で流用
+      return ['st-mine-event'];
     },
 
+    // 連泊でも各日セルにラベルを描く。タイトルは「民宿名（n人）」を表示。
+    eventContent: function (arg) {
+      const title = arg.event.title || '予約';
+      return { html: `<div class="st-minecell-label">${title}</div>` };
+    },
+    
     // ブロック表示にする（高さが確保され、テキストと帯が重ならない）
     eventDisplay: 'block',
 
-    // クリックしても何もしない
+    // 完全閲覧専用
     eventClick: function (info) {
       info.jsEvent.preventDefault();
       return false;

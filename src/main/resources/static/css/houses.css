@@ -171,3 +171,27 @@
   color: #b71c1c;
 }
 
+/* ピル全体の見た目（背景・枠線・角丸） */
+.fc .mine-event {
+  background: rgba(33, 111, 219, 0.15);   /* 淡い青い帯 */
+  border: 1px solid #216fdb;              /* 帯の輪郭 */
+  color: #134a9c;                          /* 文字色（コントラスト改善） */
+  border-radius: 8px;
+}
+
+/* テキストの読みやすさ（内側余白・太字気味） */
+.fc .mine-event .fc-event-main {
+  padding: 2px 8px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* ブロック表示時に高さを十分確保して“線だけ”にならないようにする */
+.fc .fc-daygrid-event.fc-daygrid-block-event {
+  min-height: 1.6em;
+}
+
+/* 余計な下線・細線に見えないよう安全側でオーバーフローを抑制 */
+.fc .fc-daygrid-event {
+  overflow: hidden;
+}

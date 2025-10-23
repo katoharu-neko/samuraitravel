@@ -180,3 +180,49 @@
 #myReservationsCalendar .fc-daygrid-event.fc-daygrid-block-event {
   min-height: 1.6em;
 }
+
+/* ===== 民宿一覧：日程で探す（カレンダー検索） ===== */
+#availabilityCalendarWrap {
+  margin-top: 1rem;
+}
+
+#availabilityCalendar {
+  background: #fff;
+  border-radius: 10px;
+  padding: .25rem;
+}
+
+#availabilityMessage {
+  margin: .75rem 0;
+  font-weight: 600;
+}
+
+#availabilityResults {
+  margin-top: .5rem;
+}
+
+/* 検索結果の簡易カード（既存の見た目を邪魔しない柔らかいUI） */
+.st-house-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.st-house-thumb img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.st-house-body {
+  flex: 1;
+  min-width: 0;
+}
+.st-house-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.st-house-meta {
+  color: #6c757d;
+  font-size: .9rem;
+}
+

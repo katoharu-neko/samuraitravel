@@ -54,72 +54,72 @@
   }
 }
 
-/* ===== FullCalendar（宿詳細ページ）強化 ===== */
+/* =========================================================
+   FullCalendar（宿詳細ページ #calendar）用の“セル全面表示”スタイル
+   ※ ここは #calendar にスコープして他ページに影響させない
+   ========================================================= */
 
 /* 日コマを絶対配置の基準に */
-.fc .fc-daygrid-day-frame {
+#calendar .fc-daygrid-day-frame {
   position: relative;
 }
 
-/* --- 他人予約（満室） -------------------------------------------------- */
-.fc .st-booked-event.fc-daygrid-event {
-  /* イベント要素を日コマいっぱいに広げる */
+/* --- 他人予約（満室） --- */
+#calendar .st-booked-event.fc-daygrid-event {
   position: absolute;
-  inset: 4px;               /* 周囲にわずかに余白 */
+  inset: 4px;                    /* 周囲にわずかに余白 */
   border: 1px solid #e57373;
-  background: #ffebee;      /* 薄い赤で塗る（可読性高） */
+  background: #ffebee;           /* 薄い赤で塗る（可読性高） */
   box-shadow: none;
   z-index: 1;
 }
 
-.fc .st-booked-event .fc-event-main {
-  /* ラベルを中央にドンと */
+#calendar .st-booked-event .fc-event-main {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
   font-weight: 700;
-  color: #b71c1c;           /* 文字は濃い赤 */
+  color: #b71c1c;                /* 文字は濃い赤 */
 }
 
 /* ラベル用（eventContentで差し込む） */
-.fc .st-fullcell-label {
+#calendar .st-fullcell-label {
   width: 100%;
   height: 100%;
   text-align: center;
 }
 
-/* --- 自分の予約（青・予約済） ----------------------------------------- */
-.fc .st-mine-event.fc-daygrid-event {
+/* --- 自分の予約（青・予約済） --- */
+#calendar .st-mine-event.fc-daygrid-event {
   position: absolute;
   inset: 4px;
   border: 1px solid #64b5f6;
-  background: #e3f2fd;      /* 薄い青 */
+  background: #e3f2fd;           /* 薄い青 */
   box-shadow: none;
   z-index: 1;
 }
 
-.fc .st-mine-event .fc-event-main {
+#calendar .st-mine-event .fc-event-main {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
   font-weight: 700;
-  color: #0d47a1;           /* 文字は濃い青 */
+  color: #0d47a1;                /* 文字は濃い青 */
 }
 
 /* 自分予約のラベル */
-.fc .st-minecell-label {
+#calendar .st-minecell-label {
   width: 100%;
   height: 100%;
   text-align: center;
 }
-/* ===== 既存の FullCalendar 拡張スタイルに追加 ===== */
 
 /* 当日を含む過去日の陰影（◎ご要望①） */
-.fc .st-past-day {
+#calendar .st-past-day {
   opacity: 0.5;              /* うっすら暗く */
   filter: grayscale(20%);
   background-image: repeating-linear-gradient(
@@ -131,67 +131,60 @@
   );
 }
 
-/* 予約一覧ページでも既存と同じ意匠が使えるように、念のため強度を上げる */
-.fc .st-mine-event.fc-daygrid-event,
-.fc .st-booked-event.fc-daygrid-event {
-  position: absolute;
-  inset: 4px;
-  box-shadow: none;
-  z-index: 1;
-}
-
-.fc .st-mine-event {
-  border: 1px solid #64b5f6;
-  background: #e3f2fd;
-}
-.fc .st-booked-event {
-  border: 1px solid #e57373;
-  background: #ffebee;
-}
-
-/* ラベル（セル全体中央） */
-.fc .st-mine-event .fc-event-main,
-.fc .st-booked-event .fc-event-main,
-.fc .st-minecell-label,
-.fc .st-fullcell-label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  font-weight: 700;
-}
-
-.fc .st-mine-event .fc-event-main,
-.fc .st-minecell-label {
-  color: #0d47a1;
-}
-.fc .st-booked-event .fc-event-main,
-.fc .st-fullcell-label {
-  color: #b71c1c;
-}
-
-/* ピル全体の見た目（背景・枠線・角丸） */
-.fc .mine-event {
-  background: rgba(33, 111, 219, 0.15);   /* 淡い青い帯 */
-  border: 1px solid #216fdb;              /* 帯の輪郭 */
-  color: #134a9c;                          /* 文字色（コントラスト改善） */
-  border-radius: 8px;
-}
-
-/* テキストの読みやすさ（内側余白・太字気味） */
-.fc .mine-event .fc-event-main {
-  padding: 2px 8px;
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-/* ブロック表示時に高さを十分確保して“線だけ”にならないようにする */
-.fc .fc-daygrid-event.fc-daygrid-block-event {
+/* “線だけに見えない”ように最低高さを確保 */
+#calendar .fc-daygrid-event.fc-daygrid-block-event {
   min-height: 1.6em;
 }
 
-/* 余計な下線・細線に見えないよう安全側でオーバーフローを抑制 */
-.fc .fc-daygrid-event {
+/* セル全面表示のため、宿詳細(#calendar)では安全側にオーバーフローを隠す */
+#calendar .fc-daygrid-event {
   overflow: hidden;
+}
+
+/* =========================================================
+   FullCalendar（予約一覧ページ #myReservationsCalendar）用
+   ※ こちらは帯の“ブロック表示”＋“はみ出しOK”に変更
+   ========================================================= */
+
+/* 予約一覧のイベントは絶対配置にしない（既定の block のまま） */
+/* 重要：overflow を可視化してタイトルを切らない */
+#myReservationsCalendar .fc-daygrid-day-events,
+#myReservationsCalendar .fc-daygrid-event-harness,
+#myReservationsCalendar .fc-daygrid-event,
+#myReservationsCalendar .fc-daygrid-event .fc-event-main {
+  overflow: visible;
+}
+
+/* 自分の予約のビジュアル（淡い青の帯＋ピル状ラベル） */
+#myReservationsCalendar .st-mine-event {
+  background: rgba(33, 111, 219, 0.10);
+  border: 1px solid #87b4f6;
+  border-radius: 10px;
+  z-index: 5;
+}
+
+/* タイトルラベル（折り返さず、はみ出し可） */
+#myReservationsCalendar .st-minecell-label {
+  display: inline-block;
+  padding: 2px 10px;
+  margin: 0 2px;
+  white-space: nowrap;        /* 折り返さない */
+  background: #fff;           /* 背景で読みやすく */
+  color: #134a9c;
+  border: 1px solid #216fdb;
+  border-radius: 9999px;
+  line-height: 1.2;
+  box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+/* 念のためタイトルコンテナの制限も解除 */
+#myReservationsCalendar .fc-event-title,
+#myReservationsCalendar .fc-event-title-container {
+  overflow: visible;
+  white-space: nowrap;
+}
+
+/* ブロック表示の最低高さだけ確保（細い線にならないように） */
+#myReservationsCalendar .fc-daygrid-event.fc-daygrid-block-event {
+  min-height: 1.6em;
 }

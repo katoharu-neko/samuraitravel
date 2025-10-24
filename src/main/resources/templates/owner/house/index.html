@@ -9,7 +9,7 @@
 		<!-- Flatpickr -->
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 		
-		<title>民宿詳細</title>
+		<title>民宿オーナーダッシュボード</title>
 	</head>
 	<body>
 		<div class="samuraitravel-wrapper">
@@ -22,8 +22,7 @@
 								<nav class="mb-4" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
 									<ol class="breadcrumb mb-0">
 										<li class="breadcrumb-item"><a th:href="@{/}">ホーム</a></li>
-										<li class="breadcrumb-item"><a th:href="@{/houses}">民宿一覧</a></li>
-										<li class="breadcrumb-item active" aria-current="page">民宿詳細</li>
+										<li class="breadcrumb-item"><a th:href="@{/houses}">民宿オーナーダッシュボード</a></li>
 									</ol>
 									
 								</nav>
@@ -32,10 +31,6 @@
 							
 							<h1 class="mb-4 text-center" th:text="${house.name}"></h1>
 							
-							<!-- 93 レビュー機能を追加しよう レビュー追加成功時のメッセージ-->
-							<div th:if="${successMessage}" class="alert alert-info">
-								<span th:text="${successMessage}"></span>
-							</div>
 							
 							<!-- 77  バリデーションに引っかかった場合エラーメッセージの表示　-->
 							<div th:if="${errorMessage}" class="alert alert-danger">
@@ -163,61 +158,6 @@
 								</div>
 							</div>
 							*/</style>
-							<!-- レビューセクション　-->
-							<div class="container px-0">
-								<h2 class="mb-4 text-center">レビュー</h2>
-								<div sec:authorize="isAuthenticated()" th:unless="${hasUserAlreadyReviewed}" class="row justify-content-center mb-4">
-									<div class="col-lg-4">
-										<a th:href="@{/houses/__${house.id}__/reviews/register}" class="btn text-white shadow-sm w-100 samuraitravel-btn">レビューを投稿する</a>
-									</div>
-								</div>
-								<div th:if="${#lists.isEmpty(newReviews)}" class="mb-4">
-									<p class="text-center">まだレビューがありません。</p>
-								</div>
-								<div th:unless="${#lists.isEmpty(newReviews)}" class="row row-cols-1 row-cols-md-2 g-4 mb-4">
-									<div th:each="review : ${newReviews}">
-										<div class="col">
-											<div class="card">
-												<div class="card-body">
-													<div class="d-flex justify-content-between">
-														<h5 class="card-title" th:text="${review.user.name}"></h5>
-														<span sec:authorize="isAuthenticated()" th:if="${#authentication.principal.user.id == review.user.id}">
-															<a th:href="@{/houses/__${house.id}__/reviews/__${review.id}__/edit}" class="me-2">編集</a>
-															<a href="#" class="samuraitravel-link-danger" data-bs-toggle="modal" th:data-bs-target="${'#deleteReviewModal' + review.id}">削除</a>
-															
-															<!-- 削除用モーダル -->
-															<div class="modal fade" th:id="${'deleteReviewModal' + review.id}" tabindex="-1" th:aria-labelledby="${'deleteReviewModalLabel' + review.id}">
-																<div class="modal-dialog">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" th:id="${'deleteReviewModalLabel' + review.id}" th:text="${house.name + 'のレビューを削除してもよろしいですか？'}"></h5>
-																			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
-																		</div>
-																		<div class="modal-footer">
-																			<form method="post" th:action="@{/houses/__${house.id}__/reviews/__${review.id}__/delete}">
-																				<button type="submit" class="btn samuraitravel-btn-danger text-white shadow-sm">削除</button>
-																			</form>
-																		</div>
-																	</div>
-																</div>
-															</div>
-														</span>
-													</div>
-													<p class="card-text mb-1">
-														<!-- #numbers.sequence(1, 5)で1から5までの数値のリストを生成し、各要素を変数starに割り当てて5回ループ -->
-														<!-- 三項演算子　　条件式 ? 条件式がtrueのときの値 : 条件式がfalseのときの値 -->
-														<span class="samuraitravel-star" th:each="star : ${#numbers.sequence(1, 5)}" th:text="${star <= review.score} ? '&#9733;' : '&#9734;'"></span>
-													</p>
-													<p class="card-text"><small class="text-muted" th:text="${#dates.format(review.createdAt, 'yyyy年MM月dd日')}"></small></p>
-													<p class="card-text" th:text="${review.content}"></p>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="text-center mb-4" th:if="${totalReviewCount > 6}">
-									<a th:href="@{/houses/__${house.id}__/reviews}">すべてのレビューを見る</a>
-								</div>
 							</div>
 						</div>
 					</div>

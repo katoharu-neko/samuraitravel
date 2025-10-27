@@ -29,6 +29,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/houses").permitAll()
                 .requestMatchers("/houses/*").permitAll()
                 .requestMatchers("/houses/*/reviews").permitAll()
+                .requestMatchers("/stripe/webhook").permitAll()
 
                 // ★ 追加：民宿一覧ページの「空き検索」APIを匿名で許可
                 .requestMatchers(HttpMethod.GET, "/api/houses/available").permitAll()

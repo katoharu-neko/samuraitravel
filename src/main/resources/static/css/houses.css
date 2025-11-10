@@ -13,7 +13,7 @@
 }
 
 /* ページ全体の軽いレイアウト調整 */
-.container {
+.samuraitravel-wrapper main .container {
   max-width: 700px;
   margin: 40px auto;
   font-family: "Hiragino Kaku Gothic ProN", "メイリオ", sans-serif;

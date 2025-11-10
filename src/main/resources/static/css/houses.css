@@ -13,10 +13,11 @@
 }
 
 /* ページ全体の軽いレイアウト調整 */
-.samuraitravel-wrapper main .container {
-  max-width: 700px;
+.samuraitravel-wrapper main .samuraitravel-container {
+  max-width: 1100px;
   margin: 40px auto;
   font-family: "Hiragino Kaku Gothic ProN", "メイリオ", sans-serif;
+  padding-inline: 1rem;
 }
 
 .form-group {
@@ -31,14 +32,34 @@
   border-radius: 10px;
 }
 
-/* 民宿情報・フォームを中央寄せ */
-.container > .col-lg-8,
-.container > .col-lg-6 {
-  text-align: left;
+/* 民宿詳細セクション */
+.house-detail-image {
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.house-detail-sections .card {
+  border-radius: 12px;
+}
+
+.house-detail-sections .card-body {
+  padding: 1.75rem;
+}
+
+.house-info-row .col-4 {
+  font-weight: 700;
+}
+
+.house-info-row .col {
+  word-break: break-word;
 }
 
 /* レスポンシブ調整 */
 @media (max-width: 768px) {
+  .house-detail-sections .card-body {
+    padding: 1.25rem;
+  }
+
   #calendar {
     width: 100%;
     margin: 20px auto;
@@ -54,175 +75,7 @@
   }
 }
 
-/* =========================================================
-   FullCalendar（宿詳細ページ #calendar）用の“セル全面表示”スタイル
-   他ページに影響しないよう #calendar に限定
-   ========================================================= */
-
 /* 日コマを絶対配置の基準に */
 #calendar .fc-daygrid-day-frame {
   position: relative;
 }
-
-/* --- 他人予約（満室） --- */
-#calendar .st-booked-event.fc-daygrid-event {
-  position: absolute;
-  inset: 4px;
-  border: 1px solid #e57373;
-  background: #ffebee;  /* 薄い赤 */
-  box-shadow: none;
-  z-index: 1;
-}
-#calendar .st-booked-event .fc-event-main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  font-weight: 700;
-  color: #b71c1c;
-}
-#calendar .st-fullcell-label {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-}
-
-/* --- 自分の予約（青・予約済） --- */
-#calendar .st-mine-event.fc-daygrid-event {
-  position: absolute;
-  inset: 4px;
-  border: 1px solid #64b5f6;
-  background: #e3f2fd;  /* 薄い青 */
-  box-shadow: none;
-  z-index: 1;
-}
-#calendar .st-mine-event .fc-event-main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  font-weight: 700;
-  color: #0d47a1;
-}
-#calendar .st-minecell-label {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-}
-
-/* 当日を含む過去日の陰影 */
-#calendar .st-past-day {
-  opacity: 0.5;
-  filter: grayscale(20%);
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(0,0,0,0.03),
-    rgba(0,0,0,0.03) 6px,
-    rgba(0,0,0,0.06) 6px,
-    rgba(0,0,0,0.06) 12px
-  );
-}
-
-/* “線だけに見えない”ように最低高さを確保 */
-#calendar .fc-daygrid-event.fc-daygrid-block-event { min-height: 1.6em; }
-/* 宿詳細(#calendar)はセル全面表示なのでオーバーフローは隠す */
-#calendar .fc-daygrid-event { overflow: hidden; }
-
-/* =========================================================
-   FullCalendar（予約一覧ページ #myReservationsCalendar）用
-   帯は通常の block 表示、テキストははみ出しOK
-   ========================================================= */
-
-/* 右端が切れないように少し余白 */
-#myReservationsCalendar { padding-right: 8px; }
-
-/* スクロール領域でテキストを切らない */
-#myReservationsCalendar .fc-scroller-harness,
-#myReservationsCalendar .fc-scroller {
-  overflow: visible !important;
-}
-
-/* イベント行コンテナ側の切り捨てを解除 */
-#myReservationsCalendar .fc-daygrid-day-events,
-#myReservationsCalendar .fc-daygrid-event-harness,
-#myReservationsCalendar .fc-daygrid-event,
-#myReservationsCalendar .fc-daygrid-event .fc-event-main,
-#myReservationsCalendar .fc-event-title,
-#myReservationsCalendar .fc-event-title-container {
-  overflow: visible;
-  white-space: nowrap; /* 折り返さずはみ出し可 */
-}
-
-/* 自分の予約のビジュアル（淡い青の帯） */
-#myReservationsCalendar .st-mine-event {
-  background: rgba(33, 111, 219, 0.10);
-  border: 1px solid #87b4f6;
-  border-radius: 10px;
-  z-index: 5;
-}
-
-/* タイトルは“文字だけ”。枠や白背景は付けない（紛らわしさ解消） */
-#myReservationsCalendar .st-minecell-label {
-  display: inline;       /* インラインに戻す */
-  padding: 0 6px;        /* ほんの少し余白だけ */
-  margin: 0;
-  background: transparent;
-  border: 0;             /* ★枠線なし */
-  color: #134a9c;
-  line-height: 1.2;
-  white-space: nowrap;
-  text-shadow: 0 1px 0 rgba(255,255,255,.6); /* ほんのり可読性UP */
-}
-
-/* “細い線”に見えないよう最低高さを確保 */
-#myReservationsCalendar .fc-daygrid-event.fc-daygrid-block-event {
-  min-height: 1.6em;
-}
-
-/* ===== 民宿一覧：日程で探す（カレンダー検索） ===== */
-#availabilityCalendarWrap {
-  margin-top: 1rem;
-}
-
-#availabilityCalendar {
-  background: #fff;
-  border-radius: 10px;
-  padding: .25rem;
-}
-
-#availabilityMessage {
-  margin: .75rem 0;
-  font-weight: 600;
-}
-
-#availabilityResults {
-  margin-top: .5rem;
-}
-
-/* 検索結果の簡易カード（既存の見た目を邪魔しない柔らかいUI） */
-.st-house-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.st-house-thumb img {
-  width: 72px;
-  height: 72px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-.st-house-body {
-  flex: 1;
-  min-width: 0;
-}
-.st-house-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-}
-.st-house-meta {
-  color: #6c757d;
-  font-size: .9rem;
-}
-
